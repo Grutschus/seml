@@ -49,7 +49,8 @@ for i in $(seq 1 {experiments_per_job}); do
 
     # Create directory for the source files in MongoDB
     if {with_sources}; then
-        tmpdir="{tmp_directory}/$(uuidgen)"  # unique temp dir based on UUID
+        tmpdir=$(mktemp -d -p "{tmp_directory}" seml_sources.XXXXXXXX) || {{
+            (>&2 echo "ERROR: Could not create temporary directory for source files under {tmp_directory}."); exit 1; }}
         # Prepend the temp dir and potential src paths to $PYTHONPATH so it will be used by python.
         # https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/
         exp_pypath="$tmpdir:$tmpdir/src:$PYTHONPATH"
