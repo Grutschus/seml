@@ -52,7 +52,9 @@ dev = [
     "pyright>=1.1.407",
     "tuna>=0.5.11",
 ]
-ssh_forward = ["sshtunnel>=0.4.0", "filelock>=3.13.3", "paramiko>=3.0,<4.0"]
+
+[project.optional-dependencies]
+ssh-forward = ["sshtunnel>=0.4.0", "filelock>=3.13.3", "paramiko>=3.0,<4.0"]
 
 [project.urls]
 Homepage = "https://github.com/TUM-DAML/seml"
