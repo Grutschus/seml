@@ -45,6 +45,14 @@ if TYPE_CHECKING:
 States = SETTINGS.STATES
 SlurmStates = SETTINGS.SLURM_STATES
 
+TASK_COUNT_OPTION_KEYS = (
+    'ntasks',
+    'n',
+    'ntasks-per-node',
+    'ntasks-per-gpu',
+    'ntasks-per-socket',
+)
+
 
 def get_experiment_environment(experiment: ExperimentDoc):
     env = {}
@@ -203,14 +211,9 @@ def start_sbatch_job(
     srun_str = ''
     if experiments_per_job <= 1:
         # Ensure single-experiment jobs don't fan out multiple tasks on exclusive allocations.
-        task_option_keys = (
-            'ntasks',
-            'n',
-            'ntasks-per-node',
-            'ntasks-per-gpu',
-            'ntasks-per-socket',
+        has_explicit_task_count = any(
+            key in sbatch_options for key in TASK_COUNT_OPTION_KEYS
         )
-        has_explicit_task_count = any(key in sbatch_options for key in task_option_keys)
         srun_str = 'srun ' if has_explicit_task_count else 'srun --ntasks=1 '
     # Construct sbatch options string
     env = get_experiment_environment(exp_array[0])
